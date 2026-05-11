@@ -1,9 +1,14 @@
 import { motion } from 'framer-motion'
 import { profile, education, awards } from '../data/content'
+import NeuralNet from './viz/NeuralNet'
 
 export default function About() {
   return (
-    <section id="about" className="section">
+    <section id="about" className="section relative">
+      <div className="absolute inset-0 opacity-50" style={{ zIndex: 0 }}>
+        <NeuralNet />
+      </div>
+      <div className="relative" style={{ zIndex: 1 }}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -11,7 +16,8 @@ export default function About() {
         transition={{ duration: 0.8 }}
       >
         <p className="font-mono text-xs tracking-[0.4em] text-accent uppercase mb-3">01 — About</p>
-        <h2 className="text-4xl md:text-6xl font-bold mb-10">Who am I.</h2>
+        <h2 className="text-4xl md:text-6xl font-bold mb-2">Who am I.</h2>
+        <p className="text-xs text-muted font-mono mb-10">↑ click background — fire a forward pass</p>
       </motion.div>
 
       <div className="grid md:grid-cols-3 gap-10">
@@ -63,6 +69,7 @@ export default function About() {
             </ul>
           </div>
         </motion.div>
+      </div>
       </div>
     </section>
   )
