@@ -26,6 +26,3 @@ If you use root site `<username>.github.io`, edit `vite.config.ts` → `base: '/
 
 All copy in [src/data/content.ts](src/data/content.ts).
 
-## Hero face shape
-
-Procedural — generated in [src/components/FaceParticles.tsx](src/components/FaceParticles.tsx) `generateHeadPoints()`. To use your real face: replace with mediapipe-468 landmark coords or sampled mesh from a head GLB.
