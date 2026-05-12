@@ -1,5 +1,5 @@
 # Ravindra Kapse — Portfolio
-
+check it here : http://ravindrakapse.github.io/ravindra_kapse_portfolio/
 Interactive portfolio. React + Vite + TypeScript + Three.js (react-three-fiber) + GSAP + Framer Motion + Tailwind.
 
 Hero = procedural face point-cloud. Scatter-to-face morph on scroll + mouse parallax (KPIT-style).
