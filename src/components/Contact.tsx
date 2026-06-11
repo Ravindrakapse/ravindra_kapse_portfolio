@@ -1,44 +1,69 @@
 import { motion } from 'framer-motion'
-import { profile } from '../data/content'
+import { ArrowRight } from 'lucide-react'
+import WordsPullUpMultiStyle from './WordsPullUpMultiStyle'
+
+const LINKS = [
+  { label: 'GitHub', href: 'https://github.com/Ravindra-kapse' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/ravindra-kapse' },
+  { label: '+91 7999216582', href: 'tel:+917999216582' },
+]
 
 export default function Contact() {
   return (
-    <section id="contact" className="section flex flex-col items-center justify-center text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.8 }}
-      >
-        <p className="font-mono text-xs tracking-[0.4em] text-accent uppercase mb-3">05 — Reach out</p>
-        <h2 className="text-5xl md:text-7xl font-bold mb-6">
-          Let's <span className="gradient-text">build</span>.
-        </h2>
-        <p className="text-lg text-white/70 max-w-xl mx-auto mb-10">
-          Open to research collaborations, agentic-AI roles, and interesting problems at the physics × ML × causality intersection.
+    <section id="contact" className="bg-black py-24 md:py-40 px-4 md:px-8">
+      <div className="max-w-4xl mx-auto text-center">
+        <p className="text-primary text-[10px] sm:text-xs tracking-widest uppercase mb-6">
+          Get in touch
         </p>
 
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal leading-[0.95] mb-10">
+          <WordsPullUpMultiStyle
+            segments={[
+              { text: "Let's build", className: 'font-normal' },
+              { text: 'something extraordinary', className: 'italic font-serif' },
+              { text: 'together.', className: 'font-normal' },
+            ]}
+          />
+        </h2>
+
         <motion.a
-          href={`mailto:${profile.email}`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.97 }}
-          className="inline-block text-lg md:text-2xl font-mono px-8 py-4 rounded-full border-2 border-accent text-white hover:bg-accent/10 transition glow"
+          href="mailto:ravindrakapse308@gmail.com"
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="group inline-flex items-center gap-2 hover:gap-4 bg-primary rounded-full pl-6 pr-1.5 py-1.5 sm:pl-8 sm:pr-2 sm:py-2 transition-all"
         >
-          {profile.email} →
+          <span className="text-black font-medium text-sm sm:text-lg">ravindrakapse308@gmail.com</span>
+          <span className="bg-black rounded-full w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#E1E0CC' }} />
+          </span>
         </motion.a>
 
-        <div className="mt-12 flex justify-center gap-6 font-mono text-sm">
-          <a href={profile.github} target="_blank" rel="noreferrer" className="text-muted hover:text-accent2 transition">GitHub</a>
-          <span className="text-muted/30">·</span>
-          <a href={profile.linkedin} target="_blank" rel="noreferrer" className="text-muted hover:text-accent2 transition">LinkedIn</a>
-          <span className="text-muted/30">·</span>
-          <a href={`tel:${profile.phone}`} className="text-muted hover:text-accent2 transition">{profile.phone}</a>
-        </div>
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="mt-10 flex justify-center gap-8"
+        >
+          {LINKS.map((l) => (
+            <a
+              key={l.label}
+              href={l.href}
+              target="_blank"
+              rel="noreferrer"
+              className="text-gray-500 text-xs sm:text-sm hover:text-primary transition-colors"
+            >
+              {l.label}
+            </a>
+          ))}
+        </motion.div>
 
-      <footer className="absolute bottom-6 text-xs text-muted/60 font-mono">
-        © {new Date().getFullYear()} Ravindra Kapse · Built with React · Three.js · GSAP
-      </footer>
+        <p className="mt-20 text-gray-600 text-[10px] tracking-widest uppercase">
+          &copy; {new Date().getFullYear()} Ravindra Kapse
+        </p>
+      </div>
     </section>
   )
 }

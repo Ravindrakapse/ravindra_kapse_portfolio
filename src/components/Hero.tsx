@@ -1,148 +1,111 @@
-import { Canvas } from '@react-three/fiber'
-import { Suspense, useEffect, useRef, useState } from 'react'
-import { OrbitControls } from '@react-three/drei'
-import { motion, AnimatePresence } from 'framer-motion'
-import BrainCloud from './BrainCloud'
-import { profile } from '../data/content'
+import { motion } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
+import WordsPullUp from './WordsPullUp'
+
+const NAV_ITEMS = [
+  { label: 'About', href: '#about' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Contact', href: '#contact' },
+]
+
+const VIDEO_URL =
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4'
 
 export default function Hero() {
-  const heroRef = useRef<HTMLDivElement>(null)
-  const [zoomMode, setZoomMode] = useState(false)
-
-  // click-on-brain (no drag) toggles zoom mode
-  useEffect(() => {
-    const el = heroRef.current
-    if (!el) return
-    const down = { x: 0, y: 0, t: 0 }
-    const onDown = (e: PointerEvent) => {
-      down.x = e.clientX; down.y = e.clientY; down.t = Date.now()
-    }
-    const onUp = (e: PointerEvent) => {
-      const dx = e.clientX - down.x
-      const dy = e.clientY - down.y
-      if (Math.hypot(dx, dy) < 5 && Date.now() - down.t < 300) {
-        // ignore clicks on overlay UI (buttons, links)
-        const target = e.target as HTMLElement
-        if (target.closest('[data-ui]')) return
-        setZoomMode((z) => !z)
-      }
-    }
-    el.addEventListener('pointerdown', onDown)
-    el.addEventListener('pointerup', onUp)
-    return () => {
-      el.removeEventListener('pointerdown', onDown)
-      el.removeEventListener('pointerup', onUp)
-    }
-  }, [])
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setZoomMode(false) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
-  const goNext = () => {
-    setZoomMode(false)
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
-    <section ref={heroRef} className="relative h-screen w-full overflow-hidden">
-      <div className="absolute inset-0">
-        <Canvas camera={{ position: [0, 0, 11], fov: 50 }} dpr={[1, 2]}>
-          <color attach="background" args={['#05060a']} />
-          <ambientLight intensity={0.4} />
-          <Suspense fallback={null}>
-            <BrainCloud />
-          </Suspense>
-          <OrbitControls
-            enableDamping
-            dampingFactor={0.08}
-            enableZoom={zoomMode}
-            enablePan={false}
-            minDistance={3}
-            maxDistance={20}
-            zoomSpeed={0.8}
-            autoRotate={false}
-          />
-        </Canvas>
-      </div>
+    <section className="h-screen p-4 md:p-6">
+      <div className="relative w-full h-full rounded-2xl md:rounded-[2rem] overflow-hidden">
+        {/* Video bg */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src={VIDEO_URL}
+        />
 
-      {/* vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 60%, rgba(5,6,10,0.6) 100%)',
-        }}
-      />
+        {/* Noise overlay */}
+        <div className="noise-overlay absolute inset-0 opacity-[0.7] mix-blend-overlay pointer-events-none" />
 
-      {/* Zoom-mode indicator + continue button */}
-      <AnimatePresence>
-        {zoomMode && (
-          <motion.div
-            data-ui
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute top-20 left-1/2 -translate-x-1/2 z-20 font-mono text-xs tracking-widest uppercase text-accent2 bg-bg/70 backdrop-blur px-4 py-2 rounded-full border border-accent2/40"
-          >
-            Zoom mode · scroll to zoom · click brain to exit
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
 
-      <button
-        data-ui
-        onClick={goNext}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 group flex flex-col items-center gap-1 text-muted hover:text-accent2 transition"
-      >
-        <span className="font-mono text-[10px] tracking-widest uppercase">
-          {zoomMode ? 'Continue' : 'Scroll · Click brain to zoom'}
-        </span>
-        <motion.svg
-          animate={{ y: [0, 4, 0] }}
-          transition={{ duration: 1.4, repeat: Infinity }}
-          className="w-4 h-4"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-        </motion.svg>
-      </button>
+        {/* Navbar */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20">
+          <nav className="bg-black rounded-b-2xl md:rounded-b-3xl px-4 py-2 md:px-8">
+            <ul className="flex items-center gap-3 sm:gap-6 md:gap-12 lg:gap-14">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    className="text-[10px] sm:text-xs md:text-sm whitespace-nowrap transition-colors"
+                    style={{ color: 'rgba(225, 224, 204, 0.8)' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#E1E0CC')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(225, 224, 204, 0.8)')}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-end pb-28 px-6 text-center pointer-events-none">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="mb-4 font-mono text-xs tracking-[0.4em] text-accent uppercase"
-        >
-          Hello, I am
-        </motion.p>
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-5xl md:text-8xl font-extrabold tracking-tight"
-        >
-          <span className="gradient-text">{profile.name}</span>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="mt-4 text-lg md:text-2xl text-white/80 font-light"
-        >
-          {profile.title}
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          className="mt-3 text-sm md:text-base text-muted font-mono"
-        >
-          {profile.tagline}
-        </motion.p>
+        {/* Hero content */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-4 pb-6 md:px-8 md:pb-8 lg:px-12 lg:pb-12">
+          <div className="grid grid-cols-12 gap-4 items-end">
+            {/* Name */}
+            <div className="col-span-12 lg:col-span-8">
+              <h1
+                className="text-[14vw] sm:text-[12vw] md:text-[10vw] lg:text-[9vw] xl:text-[8vw] font-medium leading-[0.85] tracking-[-0.04em]"
+                style={{ color: '#E1E0CC' }}
+              >
+                <WordsPullUp text="Ravindra Kapse" />
+              </h1>
+            </div>
+
+            {/* Tagline + CTA */}
+            <div className="col-span-12 lg:col-span-4 pb-2 lg:pb-4 flex flex-col gap-4">
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <p className="text-primary text-xs sm:text-sm font-bold tracking-widest uppercase mb-2">
+                  AI Research Scientist
+                </p>
+              </motion.div>
+
+              <motion.p
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="text-primary/70 text-xs sm:text-sm md:text-base"
+                style={{ lineHeight: 1.2 }}
+              >
+                Physics-informed ML · Causal inference · Agentic systems · Digital twins · Multi-agent architectures
+              </motion.p>
+
+              <motion.a
+                href="/RAVINDRA_KAPSE.pdf"
+                target="_blank"
+                rel="noreferrer"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.7, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="group inline-flex items-center gap-1 hover:gap-3 bg-primary rounded-full pl-5 pr-1 py-1 sm:pl-6 sm:pr-1.5 sm:py-1.5 transition-all self-start"
+              >
+                <span className="text-black font-medium text-sm sm:text-base">Download Resume</span>
+                <span className="bg-black rounded-full w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <ArrowRight className="w-4 h-4" style={{ color: '#E1E0CC' }} />
+                </span>
+              </motion.a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )
